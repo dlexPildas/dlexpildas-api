@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DlexPildas.Domain\DlexPildas.Domain.csproj" />
+    <ProjectReference Include="..\DlexPildas.Persistence\DlexPildas.Persistence.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
