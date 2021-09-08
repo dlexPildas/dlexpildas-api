@@ -27,6 +27,8 @@ namespace DlexPildas.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddAutoMapper(GetType().Assembly);
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
