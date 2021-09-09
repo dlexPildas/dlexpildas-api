@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DlexPildas.Application.Services.ReminderAggregate;
+using DlexPildas.Persistence.Contracts;
+using DlexPildas.Persistence.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace DlexPildas.Api
@@ -26,10 +23,18 @@ namespace DlexPildas.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DataContext>(
+                x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+            );
+
 
             services.AddAutoMapper(GetType().Assembly);
-            
+
             services.AddControllers();
+
+            services.AddScoped<IReminderService, ReminderService>();
+            services.AddScoped<IPersist, Persist>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DlexPildas.Api", Version = "v1" });
