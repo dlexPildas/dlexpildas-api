@@ -1,3 +1,4 @@
+using DlexPildas.Application.Services.ArticleAggregate;
 using DlexPildas.Application.Services.ReminderAggregate;
 using DlexPildas.Persistence.Contracts;
 using DlexPildas.Persistence.Data;
@@ -26,13 +27,13 @@ namespace DlexPildas.Api
             services.AddDbContext<DataContext>(
                 x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
-
-
+            
             services.AddAutoMapper(GetType().Assembly);
 
             services.AddControllers();
 
             services.AddScoped<IReminderService, ReminderService>();
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IPersist, Persist>();
             
             services.AddSwaggerGen(c =>

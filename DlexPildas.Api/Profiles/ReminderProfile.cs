@@ -9,6 +9,7 @@ namespace DlexPildas.Api.Profiles
         public ReminderProfile()
         {
             CreateMap<Reminder, ReminderCreateDto>().ReverseMap();
+            CreateMap<Reminder, ReminderUpdateDto>().ReverseMap();
         }
 
     }

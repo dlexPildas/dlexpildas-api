@@ -9,6 +9,7 @@ using DlexPildas.Domain.Models;
 using DlexPildas.Persistence.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DlexPildas.Api.Controllers
 {
@@ -37,7 +38,7 @@ namespace DlexPildas.Api.Controllers
         /// <param name="reminder">Object that represent a reminder</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateReminder(ReminderCreateDto reminderDto)
+        public async Task<IActionResult> AddReminder(ReminderCreateDto reminderDto)
         {
             try
             {
@@ -47,9 +48,65 @@ namespace DlexPildas.Api.Controllers
 
                 return this.StatusCode(StatusCodes.Status201Created, "Reminder was created with success!");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "There was an error to create a reminder :(");
+            }
+        }
+
+
+        /// <summary>
+        /// Method to update a reminder
+        /// </summary>
+        /// <param name="reminderUpdateDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateReminder(ReminderUpdateDto reminderUpdateDto)
+        {
+            try
+            {
+                var reminderExists = _dataContext.Reminders
+                    .AsNoTracking()
+                    .FirstOrDefault(x => x.Id == reminderUpdateDto.Id);
+
+                if (reminderExists == null)
+                    return NotFound("Reminder not found!");
+
+                var reminder = _mapper.Map<Reminder>(reminderUpdateDto);
+
+                await _reminderService.UpdateReminder(reminder);
+
+                return Ok("Reminder was updated with success!");
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "There was an error to update a reminder :(");
+            }
+        }
+
+        /// <summary>
+        /// Method to delete a specific reminder by Id
+        /// </summary>
+        /// <param name="id">Reminder's Id that will be deleted</param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteReminder(int id)
+        {
+            try
+            {
+                var reminderExists = _dataContext.Reminders
+                    .FirstOrDefault(x => x.Id == id);
+
+                if (reminderExists == null)
+                    return NotFound("Reminder not found!");
+
+                await _reminderService.DeleteReminder(reminderExists);
+
+                return Ok("Reminder was deleted with success!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -71,7 +128,6 @@ namespace DlexPildas.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         /// <summary>
@@ -82,7 +138,20 @@ namespace DlexPildas.Api.Controllers
         [HttpGet("{id}")]
         public IActionResult GetReminderById(int id)
         {
-            return Ok("");
+            try
+            {
+                var reminder = _dataContext.Reminders
+                .FirstOrDefault(x => x.Id == id);
+
+                if (reminder == null)
+                    return NotFound("Reminder not found!");
+
+                return Ok(reminder);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "There was an error to update a reminder :(");
+            }
         }
 
     }
