@@ -46,7 +46,7 @@ namespace DlexPildas.Api.Controllers
 
                 await _reminderService.AddReminder(reminder);
 
-                return this.StatusCode(StatusCodes.Status201Created, "Reminder was created with success!");
+                return Ok();
             }
             catch (Exception)
             {
@@ -76,7 +76,7 @@ namespace DlexPildas.Api.Controllers
 
                 await _reminderService.UpdateReminder(reminder);
 
-                return Ok("Reminder was updated with success!");
+                return Ok();
             }
             catch (Exception)
             {
@@ -102,7 +102,7 @@ namespace DlexPildas.Api.Controllers
 
                 await _reminderService.DeleteReminder(reminderExists);
 
-                return Ok("Reminder was deleted with success!");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -120,6 +120,7 @@ namespace DlexPildas.Api.Controllers
             try
             {
                 var reminders = _dataContext.Reminders
+                    .OrderBy(x => x.ReminderDate)
                     .ToList();
 
                 return Ok(reminders);

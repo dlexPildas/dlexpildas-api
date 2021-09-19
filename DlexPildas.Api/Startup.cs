@@ -27,7 +27,7 @@ namespace DlexPildas.Api
             services.AddDbContext<DataContext>(
                 x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
-            
+
             services.AddAutoMapper(GetType().Assembly);
 
             services.AddControllers();
@@ -35,7 +35,7 @@ namespace DlexPildas.Api
             services.AddScoped<IReminderService, ReminderService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IPersist, Persist>();
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DlexPildas.Api", Version = "v1" });
@@ -55,6 +55,8 @@ namespace DlexPildas.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
 
